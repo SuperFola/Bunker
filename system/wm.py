@@ -38,7 +38,7 @@ class DesktopManager:
 
     def add_windows(self, *news):
         for new in news:
-            self.windows.append(new)
+            self.windows.append(new(self.screen))
 
     def draw(self):
         pygame.draw.rect(self.screen, (0, 0, 0), (0, 0) + self.screen.get_size())

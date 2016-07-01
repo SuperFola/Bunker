@@ -38,7 +38,7 @@ class Window:
         if self.living:
             self.draw_vitals()
             self.draw_content()
-            self.screen.blit(self._content, self.pos)
+            self.screen.blit(self._content, (self.pos[0], self.pos[1] + 24))
 
     def set_alive(self, value=True):
         self.living = value
