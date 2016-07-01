@@ -24,9 +24,9 @@ class Window:
 
     def draw_vitals(self):
         # barre
-        pygame.draw.rect(self.screen, (150, 150, 150), self.pos + (self.size[0], 24))
+        pygame.draw.rect(self.screen, GREY, self.pos + (self.size[0], 24))
         # titre
-        self.screen.blit(font.render(self.fen_name, 1, (10, 10, 10)), (self.pos[0] + 2, self.pos[1] + 2))
+        self.screen.blit(font.render(self.fen_name, 1, BLACK), (self.pos[0] + 2, self.pos[1] + 2))
         # croix
         pygame.draw.rect(self.screen, RED, self.escape_btn)
 
@@ -61,7 +61,7 @@ class Window:
             x, y = event.pos
             if self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
                     and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:
-                pygame.draw.rect(self.screen, (0, 0, 0), (0, 0) + self.screen.get_size())
+                pygame.draw.rect(self.screen, BLACK, (0, 0) + self.screen.get_size())
                 self.living = False
 
     def trigger_user(self, event):

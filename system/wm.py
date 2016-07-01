@@ -2,6 +2,7 @@
 
 import time
 from .utils import *
+from . import process_manager
 
 
 class DesktopManager:
@@ -9,21 +10,13 @@ class DesktopManager:
         self.screen = screen
         self.done = False
         self.clock = pygame.time.Clock()
-        self.windows = []
         self.tskb_size = (100, self.screen.get_height())
         self.cl_tskb = GREEN
         self.main_txt_tsk_bar = font.render("BunkerOS", 1, RED)
         self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
 
     def update(self):
-        alives = []
-        not_alives = []
-        for w in self.windows:
-            if w.alive():
-                alives.append(w)
-            else:
-                not_alives.append(w)
-        self.windows = alives + not_alives
+        process_manager.ProcessManager.reoder_ifalive()
 
     def run(self):
         while not self.done:
@@ -37,14 +30,10 @@ class DesktopManager:
             self.update()
             pygame.display.flip()
 
-    def add_windows(self, *news):
-        for new in news:
-            self.windows.append(new(self._content))
-
     def draw(self):
-        pygame.draw.rect(self.screen, (0, 0, 0), (0, 0) + self.screen.get_size())
+        pygame.draw.rect(self.screen, BLACK, (0, 0) + self.screen.get_size())
 
-        for i in self.windows[::-1]:
+        for i in process_manager.ProcessManager.windows()[::-1]:
             i.draw()
         self.draw_task_bar()
         self.main_button_tsk_bar()
@@ -55,9 +44,9 @@ class DesktopManager:
     def draw_task_bar(self):
         pygame.draw.rect(self.screen, self.cl_tskb, (0, 0) + self.tskb_size)
         y = 40
-        for i in self.windows:
+        for i in process_manager.ProcessManager.windows():
             dispo = (self.tskb_size[0] - 8) // 6
-            txt = font_petite.render(i.get_title()[:dispo], 1, WHITE if i in self.windows else GREY)
+            txt = font_petite.render(i.get_title()[:dispo], 1, WHITE if i in process_manager.ProcessManager.windows() else GREY)
             self.screen.blit(txt, (4, y))
             y += txt.get_size()[1] + 4
 
@@ -69,14 +58,14 @@ class DesktopManager:
 
     def print_fps(self):
         pygame.draw.rect(self.screen, GREY, (self.screen.get_width() - 50, 0, 90, 20))
-        self.screen.blit(font.render(str(int(self.clock.get_fps())), 1, (10, 10, 10)), (self.screen.get_width() - 40, 2))
+        self.screen.blit(font.render(str(int(self.clock.get_fps())), 1, BLACK), (self.screen.get_width() - 40, 2))
 
     def select_prog(self, y=0):
         real_select = (y - 40) // 14
         print(y, real_select)
-        if 0 <= real_select < len(self.windows):
-            if real_select < len(self.windows):
-                self.windows[real_select].set_alive()
+        if 0 <= real_select < len(process_manager.ProcessManager.windows()):
+            if real_select < len(process_manager.ProcessManager.windows()):
+                process_manager.ProcessManager.windows()[real_select].set_alive()
 
     def print_time(self):
         t = time.strftime("%A")
@@ -90,7 +79,7 @@ class DesktopManager:
         if event.type == MOUSEBUTTONDOWN and event.pos[0] > self.tskb_size[0] or event.type != MOUSEBUTTONDOWN:
             if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION):
                 event.pos = (event.pos[0] - self.tskb_size[0], event.pos[1])
-            if len(self.windows) >= 1:
-                self.windows[0].trigger(event)
+            if len(process_manager.ProcessManager.windows()) >= 1:
+                process_manager.ProcessManager.windows()[0].trigger(event)
         elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0]:
             self.select_prog(event.pos[1])
