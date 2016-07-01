@@ -49,7 +49,7 @@ class Window:
     def get_title(self):
         return self.fen_name
 
-    def trigger_vitals(self):
+    def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
             if self.pos[0] <= x <= self.pos[0] + self.size[0] and self.pos[1] <= y <= self.pos[1] + 24:
@@ -58,15 +58,16 @@ class Window:
             if self.clic_on_barre:
                 pass
         if event.type == MOUSEBUTTONUP:
+            print("in", event)
             x, y = event.pos
             if self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
                     and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:
                 pygame.draw.rect(self.screen, (0, 0, 0), (0, 0) + self.screen.get_size())
                 self.living = False
 
-    def trigger_user(self):
+    def trigger_user(self, event):
         pass
 
     def trigger(self, event):
-        self.trigger_vitals()
-        self.trigger_user()
+        self.trigger_vitals(event)
+        self.trigger_user(event)
