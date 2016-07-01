@@ -89,7 +89,7 @@ class DesktopManager:
     def trigger(self, event):
         if event.type == MOUSEBUTTONDOWN and event.pos[0] > self.tskb_size[0] or event.type != MOUSEBUTTONDOWN:
             if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION):
-                event.pos = (self.tskb_size[0] + event.pos[0], event.pos[1])
+                event.pos = (event.pos[0] - self.tskb_size[0], event.pos[1])
             if len(self.windows) >= 1:
                 self.windows[0].trigger(event)
         elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0]:
