@@ -1,14 +1,7 @@
 #-*-coding:Utf-8-*-
 
 import time
-import pygame
-from pygame.locals import *
-from utils import *
-
-
-pygame.font.init()
-font = pygame.font.Font("freesansbold.ttf", 16)
-font_petite = pygame.font.Font("freesansbold.ttf", 11)
+from .utils import *
 
 
 class DesktopManager:
@@ -97,55 +90,3 @@ class DesktopManager:
                 self.windows[0].trigger(event)
         elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0]:
             self.select_prog(event.pos[1])
-
-
-class Window:
-    def __init__(self, screen, titre="", version=1.0, pos=(0, 0), size=(0, 0), couleur=(20, 20, 20), cote_c=12):
-        self.screen = screen
-        self.wscreen, self.hscreen = self.screen.get_size()
-        self.titre = titre
-        self.version = version
-        self.fen_name = "[" + self.titre + "]" + " " + str(self.version)
-        self.pos = pos
-        self.size = size
-        self.couleur = couleur
-        self.cote_c = cote_c
-        self.living = True
-        self.escape_btn = (
-            self.pos[0] + self.size[0] - (24 - self.cote_c) // 2 - self.cote_c,
-            self.pos[1] + (24 - self.cote_c) // 2,
-            self.cote_c,
-            self.cote_c
-        )
-        self.clic_on_barre = False
-
-    def draw(self):
-        if self.living:
-            pygame.draw.rect(self.screen, self.couleur, self.pos + self.size)
-            pygame.draw.rect(self.screen, (150, 150, 150), self.pos + (self.size[0], 24))
-            self.screen.blit(font.render(self.fen_name, 1, (10, 10, 10)), (self.pos[0] + 2, self.pos[1] + 2))
-            pygame.draw.rect(self.screen, RED, self.escape_btn)
-
-    def set_alive(self, value=True):
-        self.living = True
-
-    def alive(self):
-        return self.living
-
-    def get_title(self):
-        return self.fen_name
-
-    def trigger(self, event):
-        if event.type == MOUSEBUTTONDOWN:
-            x, y = event.pos
-            if self.pos[0] <= x <= self.pos[0] + self.size[0] and self.pos[1] <= y <= self.pos[1] + 24:
-                self.clic_on_barre = True
-        if event.type == MOUSEMOTION:
-            if self.clic_on_barre:
-                pass
-        if event.type == MOUSEBUTTONUP:
-            x, y = event.pos
-            if self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
-                    and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:
-                pygame.draw.rect(self.screen, (0, 0, 0), (0, 0) + self.screen.get_size())
-                self.living = False
