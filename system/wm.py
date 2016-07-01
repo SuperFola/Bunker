@@ -10,9 +10,10 @@ class DesktopManager:
         self.done = False
         self.clock = pygame.time.Clock()
         self.windows = []
-        self.tskb_size = (100, self.screen.get_size()[1])
-        self.cl_tskb = (45, 167, 37)
+        self.tskb_size = (100, self.screen.get_height())
+        self.cl_tskb = GREEN
         self.main_txt_tsk_bar = font.render("BunkerOS", 1, RED)
+        self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
 
     def update(self):
         alives = []
@@ -38,7 +39,7 @@ class DesktopManager:
 
     def add_windows(self, *news):
         for new in news:
-            self.windows.append(new(self.screen))
+            self.windows.append(new(self._content))
 
     def draw(self):
         pygame.draw.rect(self.screen, (0, 0, 0), (0, 0) + self.screen.get_size())
@@ -48,6 +49,7 @@ class DesktopManager:
         self.draw_task_bar()
         self.main_button_tsk_bar()
         self.print_fps()
+        self.screen.blit(self._content, (self.tskb_size[0], 0))
         self.print_time()
 
     def draw_task_bar(self):
@@ -86,6 +88,8 @@ class DesktopManager:
 
     def trigger(self, event):
         if event.type == MOUSEBUTTONDOWN and event.pos[0] > self.tskb_size[0] or event.type != MOUSEBUTTONDOWN:
+            if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION):
+                event.pos = (self.tskb_size[0] + event.pos[0], event.pos[1])
             if len(self.windows) >= 1:
                 self.windows[0].trigger(event)
         elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0]:
