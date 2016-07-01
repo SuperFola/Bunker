@@ -1,5 +1,5 @@
 from . import Window
-import pygame
+from .utils import *
 
 
 class App(Window):

@@ -1,5 +1,5 @@
 from . import Window
-import pygame
+from .utils import *
 
 
 class App(Window):
@@ -7,19 +7,18 @@ class App(Window):
         Window.__init__(
             self,
             screen,
-            titre="App System Test",
+            titre="FPS",
             version=1.0,
             pos=(50, 80),
             size=(100, 400),
-            couleur=(20, 20, 20)
+            couleur=WHITE
         )
 
     def draw_content(self):
         # fond
         pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
 
-        # on va tester le débordement
-        pygame.draw.rect(self._content, (255, 0, 0), (20, 100, 350, 350))
+        self._content.blit(font.render(str(int(ProcessManager.clock().get_fps())), 1, BLACK), (0, 0))
 
     def trigger_user(self, event):
         pass

@@ -9,6 +9,11 @@ class ProcessManager:
             ProcessManager.instance = self
         self._windows = []
         self._adding_order = []
+        self._clock = pygame.time.Clock()
+
+    @staticmethod
+    def clock():
+        return ProcessManager.instance._clock
 
     @staticmethod
     def windows():

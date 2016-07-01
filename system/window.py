@@ -56,6 +56,15 @@ class Window:
     def get_title(self):
         return self.fen_name
 
+    def move(self, xd, yd):
+        self.pos = (self.pos[0] + xd, self.pos[1] + yd)
+        self.escape_btn = (
+            self.pos[0] + self.size[0] - (24 - self.cote_c) // 2 - self.cote_c,
+            self.pos[1] + (24 - self.cote_c) // 2,
+            self.cote_c,
+            self.cote_c
+        )
+
     def trigger_vitals(self, event):
         if event.type == MOUSEBUTTONDOWN:
             x, y = event.pos
@@ -63,8 +72,10 @@ class Window:
                 self.clic_on_barre = True
         if event.type == MOUSEMOTION:
             if self.clic_on_barre:
-                pass
+                x, y = event.rel
+                self.move(x, y)
         if event.type == MOUSEBUTTONUP:
+            self.clic_on_barre = False
             x, y = event.pos
             if self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
                     and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:

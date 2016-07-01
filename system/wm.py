@@ -9,8 +9,7 @@ class DesktopManager:
     def __init__(self, screen):
         self.screen = screen
         self.done = False
-        self.clock = pygame.time.Clock()
-        self.tskb_size = (100, self.screen.get_height())
+        self.tskb_size = (120, self.screen.get_height())
         self.cl_tskb = GREEN
         self.main_txt_tsk_bar = pygame.image.load("system/resx/logo.png")
         self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
@@ -36,7 +35,7 @@ class DesktopManager:
         self.on_start()
 
         while not self.done:
-            self.clock.tick()
+            ProcessManager.clock().tick()
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
                     self.done = True
@@ -47,15 +46,14 @@ class DesktopManager:
         self.on_end()
 
     def draw(self):
-        pygame.draw.rect(self.screen, BLACK, (0, 0) + self.screen.get_size())
+        pygame.draw.rect(self._content, BLACK, (0, 0) + self._content.get_size())
 
         for i in process_manager.ProcessManager.windows()[::-1]:
             i.draw()
         self.draw_task_bar()
         self.main_button_tsk_bar()
-        self.print_fps()
-        self.screen.blit(self._content, (self.tskb_size[0], 0))
         self.print_time()
+        self.screen.blit(self._content, (self.tskb_size[0], 0))
 
     def draw_task_bar(self):
         pygame.draw.rect(self.screen, self.cl_tskb, (0, 0) + self.tskb_size)
@@ -78,10 +76,6 @@ class DesktopManager:
     def main_button_tsk_bar(self):
         pygame.draw.rect(self.screen, YELLOW, (0, 0, self.tskb_size[0], self.main_txt_tsk_bar.get_height()))
         self.screen.blit(self.main_txt_tsk_bar, (0, 0))
-
-    def print_fps(self):
-        pygame.draw.rect(self.screen, GREY, (self.screen.get_width() - 50, 0, 90, 20))
-        self.screen.blit(font.render(str(int(self.clock.get_fps())), 1, BLACK), (self.screen.get_width() - 40, 2))
 
     def select_prog(self, y=0):
         real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // 14
