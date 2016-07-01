@@ -12,7 +12,7 @@ class Window:
         self.size = size
         self.couleur = couleur
         self.cote_c = cote_c
-        self.living = True
+        self.state = WStates.ACTIVE
         self.escape_btn = (
             self.pos[0] + self.size[0] - (24 - self.cote_c) // 2 - self.cote_c,
             self.pos[1] + (24 - self.cote_c) // 2,
@@ -21,6 +21,11 @@ class Window:
         )
         self._content = pygame.Surface(self.size)
         self.clic_on_barre = False
+
+        self._blurw = pygame.Surface(self.size)
+        self._blurw.fill(WHITE)
+        self._blurw.convert_alpha()
+        self._blurw.set_alpha(225)
 
     def draw_vitals(self):
         # barre
@@ -35,16 +40,18 @@ class Window:
         pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
 
     def draw(self):
-        if self.living:
+        if self.alive():
             self.draw_vitals()
             self.draw_content()
+            if self.state == WStates.NOT_RESPONDING:
+                self._content.blit(self._blurw, (0, 0))
             self.screen.blit(self._content, (self.pos[0], self.pos[1] + 24))
 
-    def set_alive(self, value=True):
-        self.living = value
+    def set_alive(self, value=WStates.ACTIVE):
+        self.state = value
 
     def alive(self):
-        return self.living
+        return self.state in (WStates.ACTIVE, WStates.NOT_RESPONDING, WStates.WAITING)
 
     def get_title(self):
         return self.fen_name
@@ -62,7 +69,7 @@ class Window:
             if self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
                     and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:
                 pygame.draw.rect(self.screen, BLACK, (0, 0) + self.screen.get_size())
-                self.living = False
+                self.state = WStates.UNACTIVE
 
     def trigger_user(self, event):
         pass

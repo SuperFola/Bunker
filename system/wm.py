@@ -12,13 +12,29 @@ class DesktopManager:
         self.clock = pygame.time.Clock()
         self.tskb_size = (100, self.screen.get_height())
         self.cl_tskb = GREEN
-        self.main_txt_tsk_bar = font.render("BunkerOS", 1, RED)
+        self.main_txt_tsk_bar = pygame.image.load("system/resx/logo.png")
         self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
 
     def update(self):
         process_manager.ProcessManager.reoder_ifalive()
+        self.draw()
+        pygame.display.flip()
+
+    # TODO: prévoir un écran de connexion
+    def on_start(self):
+        process_manager.ProcessManager.init_windows_with(self._content)
+        w, h = self.main_txt_tsk_bar.get_size()
+        self.main_txt_tsk_bar = pygame.transform.scale(self.main_txt_tsk_bar,
+            (self.tskb_size[0], int(self.tskb_size[0] / w * h))
+        )
+
+    # TODO: prévoir un écran de déconnexion
+    def on_end(self):
+        pass
 
     def run(self):
+        self.on_start()
+
         while not self.done:
             self.clock.tick()
             for event in pygame.event.get():
@@ -26,9 +42,9 @@ class DesktopManager:
                     self.done = True
                 else:
                     self.trigger(event)
-            self.draw()
             self.update()
-            pygame.display.flip()
+
+        self.on_end()
 
     def draw(self):
         pygame.draw.rect(self.screen, BLACK, (0, 0) + self.screen.get_size())
@@ -43,25 +59,32 @@ class DesktopManager:
 
     def draw_task_bar(self):
         pygame.draw.rect(self.screen, self.cl_tskb, (0, 0) + self.tskb_size)
-        y = 40
+        y = self.main_txt_tsk_bar.get_height() + 10
+        dispo = (self.tskb_size[0] - 8) // 6
+        color = RED
         for i in process_manager.ProcessManager.windows():
-            dispo = (self.tskb_size[0] - 8) // 6
-            txt = font_petite.render(i.get_title()[:dispo], 1, WHITE if i in process_manager.ProcessManager.windows() else GREY)
+            if i.state == WStates.ACTIVE:
+                color = WHITE
+            elif i.state == WStates.UNACTIVE:
+                color = BLACK
+            elif i.state == WStates.NOT_RESPONDING:
+                color = BLUE
+            elif i.state == WStates.WAITING:
+                color = YELLOW
+            txt = font_petite.render(i.get_title()[:dispo], 1, color)
             self.screen.blit(txt, (4, y))
-            y += txt.get_size()[1] + 4
+            y += txt.get_height() + 4
 
     def main_button_tsk_bar(self):
-        pygame.draw.rect(self.screen, YELLOW, (0, 0, self.tskb_size[0], 30))
-        self.screen.blit(self.main_txt_tsk_bar,
-                ((self.tskb_size[0] - self.main_txt_tsk_bar.get_size()[0]) // 2,
-                  self.main_txt_tsk_bar.get_size()[1] // 2))
+        pygame.draw.rect(self.screen, YELLOW, (0, 0, self.tskb_size[0], self.main_txt_tsk_bar.get_height()))
+        self.screen.blit(self.main_txt_tsk_bar, (0, 0))
 
     def print_fps(self):
         pygame.draw.rect(self.screen, GREY, (self.screen.get_width() - 50, 0, 90, 20))
         self.screen.blit(font.render(str(int(self.clock.get_fps())), 1, BLACK), (self.screen.get_width() - 40, 2))
 
     def select_prog(self, y=0):
-        real_select = (y - 40) // 14
+        real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // 14
         print(y, real_select)
         if 0 <= real_select < len(process_manager.ProcessManager.windows()):
             if real_select < len(process_manager.ProcessManager.windows()):
