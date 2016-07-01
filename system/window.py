@@ -58,7 +58,6 @@ class Window:
             if self.clic_on_barre:
                 pass
         if event.type == MOUSEBUTTONUP:
-            print("in", event)
             x, y = event.pos
             if self.escape_btn[0] <= x <= self.escape_btn[0] + self.escape_btn[2] \
                     and self.escape_btn[1] <= y <= self.escape_btn[1] + self.escape_btn[3]:
