@@ -9,7 +9,7 @@ win = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 win_manager = system.wm.DesktopManager(win)
 
-win_manager.add_windows(*system.app_list, *apps.app_list)
+win_manager.add_windows(*[_ for _ in system.app_list + apps.app_list])
 win_manager.run()
 
 pygame.quit()
