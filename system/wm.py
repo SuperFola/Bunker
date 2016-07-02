@@ -16,9 +16,6 @@ class DesktopManager:
         self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
 
     def update(self):
-        start_screen = connect.Connect()
-        start_screen.run()
-
         process_manager.ProcessManager.reoder_ifalive()
         self.draw()
         for win in process_manager.ProcessManager.windows():
@@ -27,6 +24,9 @@ class DesktopManager:
 
     # TODO: prévoir un écran de connexion
     def on_start(self):
+        start_screen = connect.Connect()
+        start_screen.run()
+        
         process_manager.ProcessManager.init_windows_with(self._content)
         w, h = self.main_txt_tsk_bar.get_size()
         self.main_txt_tsk_bar = pygame.transform.scale(self.main_txt_tsk_bar,

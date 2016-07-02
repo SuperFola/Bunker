@@ -20,14 +20,14 @@ class ProcessManagerWindow(Window):
     def draw_content(self):
         # fond
         pygame.draw.rect(self._content, self.couleur, (0, 0) + self.size)
-        
+
         text = font_petite.render("NAME", 1, BLACK)
         text2 = font_petite.render("STATUS", 1, BLACK)
         text3 = font_petite.render("UPDATE", 1, BLACK)
         self._content.blit(text, (0, 0))
         self._content.blit(text2, (250, 0))
         self._content.blit(text3, (150, 0))
-        
+
         y = 15
         s = "UNKNOW"
         for window in ProcessManager.windows():
@@ -43,8 +43,7 @@ class ProcessManagerWindow(Window):
             name = font_petite.render(window.get_title(), 1, BLACK)
             status = font_petite.render(s, 1, BLACK)
             if len(ProcessManager.execution_datas()[window.get_title()]['exc_times']) >= 1:
-                dt = sum(ProcessManager.execution_datas()[window.get_title()]['exc_times']) / len(ProcessManager.execution_datas()[window.get_title()]['exc_times'])
-                dt = str(dt)[:3]
+                dt = "%3.2f" % (sum(ProcessManager.execution_datas()[window.get_title()]['exc_times']) / len(ProcessManager.execution_datas()[window.get_title()]['exc_times']))
             else:
                 dt = "NONE"
             dt = font_petite.render(dt, 1, BLACK)

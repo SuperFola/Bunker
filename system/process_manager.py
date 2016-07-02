@@ -2,6 +2,9 @@ from .utils import *
 import time
 
 
+MAX = 10
+
+
 class ProcessManager:
     instance = None
 
@@ -21,7 +24,10 @@ class ProcessManager:
     def update_process(process):
         start = time.time()
         process.update()
-        ProcessManager.instance._execution_datas[process.get_title()]['exc_times'].append(time.time() - start)
+        ProcessManager.instance._execution_datas[process.get_title()]['exc_times'].append((time.time() - start) * 1000)
+        if len(ProcessManager.instance._execution_datas[process.get_title()]['exc_times']) > MAX:
+            ProcessManager.instance._execution_datas[process.get_title()]['exc_times'] = \
+                ProcessManager.instance._execution_datas[process.get_title()]['exc_times'][::-1][:MAX][::-1]
 
     @staticmethod
     def clock():

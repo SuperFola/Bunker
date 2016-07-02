@@ -11,8 +11,8 @@ class Connect:
         self.done = False
         self.connected = False
         self.user_pwd = ""
-        self.session = "user"
-        self.session_text = font.render(self.session, 1, BLACK)
+        self.session = (0, "user")
+        self.session_text = font.render(self.session[1], 1, BLACK)
         self.text = font.render("", 1, WHITE)
         self.max_len_pwd = 20
         self.quitter = font.render("Quitter", 1, BLACK)
@@ -23,21 +23,21 @@ class Connect:
         self.avatar_pos = ((self.screen.get_width() - 200) // 2, (self.screen.get_height() - 200) // 2 - 200)
         self.user_pos = ((self.screen.get_width() - self.session_text.get_width()) // 2, (self.screen.get_height() - self.session_text.get_height()) // 2 - 50)
         try:
-            self.password = eval(open("system/datas/pwd.bad").read())
+            self.sessions = eval(open("system/datas/sessions.bad").read())
         except SyntaxError:
-            print("Password corrupted. Can not continue.")
-            self.done = True
-            self.connected = False
+            raise RuntimeError("Sessions corrupted. Can not continue.")
 
     def load(self):
+        _sessions = [e['name'] for e in self.sessions]
         for file in glob("system/resx/connect/*.png"):
             self.files[os.path.basename(file).split('.')[0]] = pygame.image.load(file).convert_alpha()
-            if os.path.basename(file).split('.')[0] in self.password.keys():
+            if os.path.basename(file).split('.')[0] in _sessions:
                 self.files[os.path.basename(file).split('.')[0]] = pygame.transform.scale(self.files[os.path.basename(file).split('.')[0]], (200, 200))
 
     def _check(self):
-        if bad_2048.crypt(4, self.user_pwd) == self.password[self.session]:
+        if bad_2048.crypt(4, self.user_pwd) == self.sessions[self.session[0]]["password"]:
             self.connected = True
+            self.done = True
         else:
             self.user_pwd = ""
             self._error()
@@ -54,27 +54,42 @@ class Connect:
             pygame.display.flip()
 
     def _change_session(self, new):
-        if new in self.password.keys():
-            self.session = new
-            self.user_pos = ((self.screen.get_width() - self.session_text.get_width()) // 2, (self.screen.get_height() - self.session_text.get_height()) // 2 - 50)
-        else:
-            self._error()
+        for i, e in enumerate(self.sessions):
+            if i == new:
+                self.session = (i, e['name'])
+                self.session_text = font.render(self.session[1], 1, BLACK)
+                self.user_pos = ((self.screen.get_width() - self.session_text.get_width()) // 2, (self.screen.get_height() - self.session_text.get_height()) // 2 - 50)
+                return
+        self._error()
 
     def run(self):
         self.load()
 
+        t = font.render("_", 1, BLACK)
+
         while not self.done:
             pygame.draw.rect(self.screen, PASTEL_BLUE, (0, 0) + self.screen.get_size())
             pygame.draw.rect(self.screen, PASTEL_ORANGE, (4 * self.screen.get_width() / 5, 0, self.screen.get_width() / 5, self.screen.get_height()))
+            self.screen.blit(font.render("Sessions", 1, BLACK), (4 * self.screen.get_width() / 5 + 10, 10))
+            for i, s in enumerate(self.sessions):
+                self.screen.blit(font.render("-> " + s['name'], 1, BLACK), (4 * self.screen.get_width() / 5 + 10, 50 + i * 40))
+                self.screen.blit(font.render("_" * int(self.screen.get_width() / 5 / t.get_width()), 1, BLACK), (4 * self.screen.get_width() / 5 + 10, 55 + i * 40))
 
             for event in pygame.event.get():
-                if event.type == KEYDOWN and event.key == K_ESCAPE:
-                    self.done = False
                 if event.type == MOUSEBUTTONDOWN:
                     x, y = event.pos
+                    # sessions
+                    if x >= 4 * self.screen.get_width() / 5:
+                        ry = (y - 50) // 40
+                        if 0 <= ry < len(self.sessions):
+                            self._change_session(ry)
+                    if 0 <= x <= self.quitter.get_width() and self.screen.get_height() - self.quitter.get_height() <= y <= self.screen.get_height():
+                        exit()
                 if event.type == KEYDOWN:
                     if event.key == K_RETURN:
                         self._check()
+                    elif event.key == K_ESCAPE:
+                        self.done = True
                     elif event.key == K_BACKSPACE:
                         self.user_pwd = self.user_pwd[:-1]
                     else:
@@ -85,7 +100,12 @@ class Connect:
             self.screen.blit(self.quitter, (0, self.screen.get_height() - self.quitter.get_height()))
             pygame.draw.rect(self.screen, BLACK, self.pos_text_box + (200, 20))
             self.screen.blit(self.text, ((self.screen.get_width() - self.text.get_width()) // 2, (self.screen.get_height() - self.text.get_height()) // 2 + 5))
-            self.screen.blit(self.files[self.session], self.avatar_pos)
+            self.screen.blit(self.files[self.session[1]], self.avatar_pos)
             self.screen.blit(self.session_text, self.user_pos)
 
             pygame.display.flip()
+
+        if self.connected:
+            pass
+        else:
+            exit()
