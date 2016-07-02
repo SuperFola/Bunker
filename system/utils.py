@@ -13,14 +13,23 @@ class WStates(Enum):
     WAITING = 3
 
 
-RED = (180, 20, 20)
-GREEN = (20, 180, 20)
-BLUE = (20, 20, 180)
-YELLOW = (20, 180, 180)
-PURPLE = (180, 20, 180)
+RED = (180, 0, 0)
+GREEN = (0, 180, 0)
+BLUE = (0, 0, 180)
+YELLOW = (0, 180, 180)
+PURPLE = (180, 0, 180)
+ORANGE = (180, 180, 0)
+
 WHITE = (255, 255, 255)
-GREY = (140, 140, 140)
+GREY = (156, 156, 156)
 BLACK = (0, 0, 0)
+
+PASTEL_BLUE = (40, 40, 150)
+PASTEL_RED = (150, 40, 40)
+PASTEL_GREEN = (40, 150, 40)
+PASTEL_YELLOW = (40, 150, 150)
+PASTEL_PURPLE = (150, 40, 150)
+PASTEL_ORANGE = (150, 150, 40)
 
 pygame.font.init()
 font = pygame.font.Font("system/resx/freesansbold.ttf", 16)

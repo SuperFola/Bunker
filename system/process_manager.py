@@ -48,6 +48,14 @@ class ProcessManager:
         raise IndexError("Can not acces window at '%i'" % index)
 
     @staticmethod
+    def add_window_and_init(window, *args):
+        i = window(*args)
+        ProcessManager.windows().append(i)
+        ProcessManager.instance._execution_datas[i.get_title()] = {
+            'exc_times': []
+        }
+
+    @staticmethod
     def init_windows_with(*args):
         for i, window in enumerate(ProcessManager.windows()):
             ProcessManager.windows()[i] = window(*args)

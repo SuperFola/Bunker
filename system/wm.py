@@ -3,6 +3,7 @@
 import time
 from .utils import *
 from . import process_manager
+from . import connect
 
 
 class DesktopManager:
@@ -11,10 +12,13 @@ class DesktopManager:
         self.done = False
         self.tskb_size = (120, self.screen.get_height())
         self.cl_tskb = GREEN
-        self.main_txt_tsk_bar = pygame.image.load("system/resx/logo.png")
+        self.main_txt_tsk_bar = pygame.image.load("system/resx/logo.png").convert_alpha()
         self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
 
     def update(self):
+        start_screen = connect.Connect()
+        start_screen.run()
+
         process_manager.ProcessManager.reoder_ifalive()
         self.draw()
         for win in process_manager.ProcessManager.windows():

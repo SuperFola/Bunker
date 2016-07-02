@@ -8,3 +8,5 @@ def decrypt(u):
  while(f!=t[0]):d,f=d+1,f>>1
  for(i,m)in enumerate(u):v=a.append(m) if o else None;r+=1;o=(~o)if(not r%d)else(o)
  return("".join(chr(c>>d)for(c)in a))
+
+if(__name__=='__main__'):print(crypt(int(input("sel> ")), input("message> ")))
