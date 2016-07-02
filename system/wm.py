@@ -17,6 +17,8 @@ class DesktopManager:
     def update(self):
         process_manager.ProcessManager.reoder_ifalive()
         self.draw()
+        for win in process_manager.ProcessManager.windows():
+            process_manager.ProcessManager.update_process(win)
         pygame.display.flip()
 
     # TODO: prévoir un écran de connexion

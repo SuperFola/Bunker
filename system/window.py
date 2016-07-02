@@ -27,6 +27,9 @@ class Window:
         self._blurw.convert_alpha()
         self._blurw.set_alpha(225)
 
+    def update(self):
+        pass
+
     def draw_vitals(self):
         # barre
         pygame.draw.rect(self.screen, GREY, self.pos + (self.size[0], 24))
