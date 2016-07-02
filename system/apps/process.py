@@ -23,9 +23,11 @@ class ProcessManagerWindow(Window):
         
         text = font_petite.render("NAME", 1, BLACK)
         text2 = font_petite.render("STATUS", 1, BLACK)
+        text3 = font_petite.render("UPDATE", 1, BLACK)
         self._content.blit(text, (0, 0))
         self._content.blit(text2, (250, 0))
-
+        self._content.blit(text3, (150, 0))
+        
         y = 15
         s = "UNKNOW"
         for window in ProcessManager.windows():
@@ -40,9 +42,15 @@ class ProcessManagerWindow(Window):
 
             name = font_petite.render(window.get_title(), 1, BLACK)
             status = font_petite.render(s, 1, BLACK)
+            if len(ProcessManager.execution_datas()[window.get_title()]['exc_times']) >= 1:
+                dt = sum(ProcessManager.execution_datas()[window.get_title()]['exc_times']) / len(ProcessManager.execution_datas()[window.get_title()]['exc_times'])
+                dt = str(dt)[:3]
+            else:
+                dt = "NONE"
+            dt = font_petite.render(dt, 1, BLACK)
             self._content.blit(name, (4, y))
             self._content.blit(status, (250, y))
-
+            self._content.blit(dt, (150, y))
             y += text.get_height()
 
     def trigger_user(self, event):
