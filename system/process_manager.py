@@ -14,6 +14,10 @@ class ProcessManager:
         self._execution_datas = {}
 
     @staticmethod
+    def execution_datas():
+        return ProcessManager.instance._execution_datas
+
+    @staticmethod
     def update_process(process):
         start = time.time()
         process.update()

@@ -8,3 +8,6 @@ app_list = []
 
 from .test import App
 app_list.append(App)
+
+from .process import ProcessManagerWindow
+app_list.append(ProcessManagerWindow)
