@@ -1,5 +1,4 @@
 from system.window import Window
-from system import utils
 
 # pour ajouter une app :
 # from .fichier import nom_de_l'app

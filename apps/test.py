@@ -1,5 +1,5 @@
 from . import Window
-from .utils import *
+from system.utils import *
 
 
 class App(Window):

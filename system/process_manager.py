@@ -1,4 +1,5 @@
 from .utils import *
+import time
 
 
 class ProcessManager:
@@ -10,6 +11,13 @@ class ProcessManager:
         self._windows = []
         self._adding_order = []
         self._clock = pygame.time.Clock()
+        self._execution_datas = {}
+
+    @staticmethod
+    def update_process(process):
+        start = time.time()
+        process.update()
+        ProcessManager.instance._execution_datas[id(process)]['exc_times'].append(time.time() - start)
 
     @staticmethod
     def clock():
@@ -28,6 +36,10 @@ class ProcessManager:
         for new in news:
             ProcessManager.windows().append(new)
             ProcessManager.windows_ordered_by_date().append(new)
+
+            ProcessManager.instance._execution_datas[id(new)] = {
+                'exc_times': []
+            }
 
     @staticmethod
     def get_sizeof_window(index):

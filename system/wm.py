@@ -35,7 +35,7 @@ class DesktopManager:
         self.on_start()
 
         while not self.done:
-            ProcessManager.clock().tick()
+            process_manager.ProcessManager.clock().tick()
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
                     self.done = True
