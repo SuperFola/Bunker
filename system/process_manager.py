@@ -17,7 +17,7 @@ class ProcessManager:
     def update_process(process):
         start = time.time()
         process.update()
-        ProcessManager.instance._execution_datas[id(process)]['exc_times'].append(time.time() - start)
+        ProcessManager.instance._execution_datas[process.get_title()]['exc_times'].append(time.time() - start)
 
     @staticmethod
     def clock():
@@ -37,10 +37,6 @@ class ProcessManager:
             ProcessManager.windows().append(new)
             ProcessManager.windows_ordered_by_date().append(new)
 
-            ProcessManager.instance._execution_datas[id(new)] = {
-                'exc_times': []
-            }
-
     @staticmethod
     def get_sizeof_window(index):
         if 0 <= index < len(ProcessManager.windows()):
@@ -51,6 +47,9 @@ class ProcessManager:
     def init_windows_with(*args):
         for i, window in enumerate(ProcessManager.windows()):
             ProcessManager.windows()[i] = window(*args)
+            ProcessManager.instance._execution_datas[ProcessManager.windows()[i].get_title()] = {
+                'exc_times': []
+            }
 
     @staticmethod
     def reoder_ifalive():
