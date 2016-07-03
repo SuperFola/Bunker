@@ -30,6 +30,13 @@ class ProcessManager:
                 ProcessManager.instance._execution_datas[process.get_title()]['exc_times'][::-1][:MAX][::-1]
 
     @staticmethod
+    def get_first_active():
+        for win in ProcessManager.windows():
+            if win.state == WStates.ACTIVE:
+                return win
+        return None
+
+    @staticmethod
     def clock():
         return ProcessManager.instance._clock
 

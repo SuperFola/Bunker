@@ -10,6 +10,7 @@ class DesktopManager:
     def __init__(self, screen):
         self.screen = screen
         self.done = False
+        self.show_main_menu = False
         self.tskb_size = (120, self.screen.get_height())
         self.cl_tskb = GREEN
         self.main_txt_tsk_bar = pygame.image.load("system/resx/logo.png").convert_alpha()
@@ -26,7 +27,7 @@ class DesktopManager:
     def on_start(self):
         start_screen = connect.Connect()
         start_screen.run()
-        
+
         process_manager.ProcessManager.init_windows_with(self._content)
         w, h = self.main_txt_tsk_bar.get_size()
         self.main_txt_tsk_bar = pygame.transform.scale(self.main_txt_tsk_bar,
@@ -59,7 +60,12 @@ class DesktopManager:
         self.draw_task_bar()
         self.main_button_tsk_bar()
         self.print_time()
+        if self.show_main_menu:
+            self.draw_main_menu()
         self.screen.blit(self._content, (self.tskb_size[0], 0))
+
+    def draw_main_menu(self):
+        pass
 
     def draw_task_bar(self):
         pygame.draw.rect(self.screen, self.cl_tskb, (0, 0) + self.tskb_size)
@@ -102,7 +108,9 @@ class DesktopManager:
         if event.type == MOUSEBUTTONDOWN and event.pos[0] > self.tskb_size[0] or event.type != MOUSEBUTTONDOWN:
             if event.type in (MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION):
                 event.pos = (event.pos[0] - self.tskb_size[0], event.pos[1])
-            if len(process_manager.ProcessManager.windows()) >= 1:
-                process_manager.ProcessManager.windows()[0].trigger(event)
-        elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0]:
+            if process_manager.ProcessManager.get_first_active():
+                process_manager.ProcessManager.get_first_active().trigger(event)
+        elif event.type == MOUSEBUTTONDOWN and event.pos[0] <= self.tskb_size[0] and event.pos[1] > self.main_txt_tsk_bar.get_height():
             self.select_prog(event.pos[1])
+        elif event.type == MOUSEBUTTONDOWN and 0 <= event.pos[0] <= self.tskb_size[0] and 0 <= event.pos[1] <= self.main_txt_tsk_bar.get_height():
+            self.show_main_menu = True

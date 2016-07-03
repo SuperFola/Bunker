@@ -26,6 +26,10 @@ class Connect:
             self.sessions = eval(open("system/datas/sessions.bad").read())
         except SyntaxError:
             raise RuntimeError("Sessions corrupted. Can not continue.")
+        else:
+            for s in self.sessions:
+                if s['password'] == []:
+                    raise RuntimeError('Empty password, can not continue')
 
     def load(self):
         _sessions = [e['name'] for e in self.sessions]
@@ -40,9 +44,12 @@ class Connect:
             self.done = True
         else:
             self.user_pwd = ""
-            self._error()
+            self._error("Wrong password")
 
-    def _error(self):
+    def _error(self, message):
+        self.wrong = font.render(message, 1, BLACK)
+        self.wrong_pos = ((self.screen.get_width() - self.wrong.get_width()) // 2, (self.screen.get_height() - self.wrong.get_height()) // 2)
+
         while True:
             ev = pygame.event.poll()
             if ev.type == KEYDOWN and ev.key == K_RETURN:
@@ -60,7 +67,7 @@ class Connect:
                 self.session_text = font.render(self.session[1], 1, BLACK)
                 self.user_pos = ((self.screen.get_width() - self.session_text.get_width()) // 2, (self.screen.get_height() - self.session_text.get_height()) // 2 - 50)
                 return
-        self._error()
+        self._error("Non existing session")
 
     def run(self):
         self.load()
@@ -98,6 +105,7 @@ class Connect:
                     self.text = font.render("*" * len(self.user_pwd), 1, WHITE)
 
             self.screen.blit(self.quitter, (0, self.screen.get_height() - self.quitter.get_height()))
+            pygame.draw.rect(self.screen, GREY, (self.pos_text_box[0] - 2, self.pos_text_box[1] - 2, 204, 24))
             pygame.draw.rect(self.screen, BLACK, self.pos_text_box + (200, 20))
             self.screen.blit(self.text, ((self.screen.get_width() - self.text.get_width()) // 2, (self.screen.get_height() - self.text.get_height()) // 2 + 5))
             self.screen.blit(self.files[self.session[1]], self.avatar_pos)
