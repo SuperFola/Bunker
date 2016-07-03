@@ -77,14 +77,20 @@ class Connect:
     def _welcome(self):
         until = time.time() + TIMER_LOGIN
         w, h = 200, 30
-        bar_size = lambda: (TIMER_LOGIN - until - time.time())
+        bar_size = lambda: (TIMER_LOGIN - (until - time.time())) / TIMER_LOGIN * w
+
+        xsc, ysc = self.screen.get_width() // 2, self.screen.get_height() // 2
+        xl, yl = self.files['logo'].get_width(), self.files['logo'].get_height()
+        xc, yc = lambda x: xsc - x // 2, lambda y: ysc - y // 2
 
         while time.time() <= until:
             pygame.draw.rect(self.screen, PASTEL_GREEN, (0, 0) + self.screen.get_size())
-            self.screen.blit(self.files['logo'], ((self.screen.get_width() - self.files['logo'].get_width()) // 2, (self.screen.get_height() - self.files['logo'].get_height()) // 2))
+            self.screen.blit(self.files['logo'], (xc(xl), yc(yl)))
 
             # barre de chargement
-            pygame.draw.rect(self.screen, BLACK, (0, 0, 10, 10))
+            pygame.draw.rect(self.screen, BLACK, (xc(w) - 2, yc(h) + 2 * yl // 3 - 2, w + 4, h + 4))
+            a = int(bar_size())
+            pygame.draw.rect(self.screen, LIGHT_BLUE, (xc(w), yc(h) + 2 * yl // 3, a, h))
 
             ev = pygame.event.poll()
 
