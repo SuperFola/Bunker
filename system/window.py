@@ -6,9 +6,10 @@ EPAISSEUR_BARRE = 24
 
 class Window:
     def __init__(self, screen, titre="", version=1.0, pos=(0, 0), size=(0, 0), couleur=(20, 20, 20),
-                 contour_couleur=BLACK, movable=True, cote_c=EPAISSEUR_BARRE // 2):
+                 contour_couleur=BLACK, couleur_barre=GREY, movable=True, cote_c=EPAISSEUR_BARRE // 2):
         self.screen = screen
         self.movable = movable
+        self.couleur_barre = couleur_barre
         self.wscreen, self.hscreen = self.screen.get_size()
         self.titre = titre
         self.version = version
@@ -42,7 +43,7 @@ class Window:
         # contour
         self.screen.blit(self._contour, (self.pos[0] - 2, self.pos[1] - 2))
         # barre
-        pygame.draw.rect(self.screen, GREY, self.pos + (self.size[0], EPAISSEUR_BARRE))
+        pygame.draw.rect(self.screen, self.couleur_barre, self.pos + (self.size[0], EPAISSEUR_BARRE))
         # titre
         self.screen.blit(font.render(self.fen_name, 1, BLACK), (self.pos[0] + 2, self.pos[1] + 2))
         # croix
