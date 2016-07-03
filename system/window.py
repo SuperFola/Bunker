@@ -5,8 +5,10 @@ EPAISSEUR_BARRE = 24
 
 
 class Window:
-    def __init__(self, screen, titre="", version=1.0, pos=(0, 0), size=(0, 0), couleur=(20, 20, 20), contour_couleur=BLACK, cote_c=EPAISSEUR_BARRE // 2):
+    def __init__(self, screen, titre="", version=1.0, pos=(0, 0), size=(0, 0), couleur=(20, 20, 20),
+                 contour_couleur=BLACK, movable=True, cote_c=EPAISSEUR_BARRE // 2):
         self.screen = screen
+        self.movable = movable
         self.wscreen, self.hscreen = self.screen.get_size()
         self.titre = titre
         self.version = version
@@ -83,8 +85,9 @@ class Window:
                 self.clic_on_barre = True
         if event.type == MOUSEMOTION:
             if self.clic_on_barre:
-                x, y = event.rel
-                self.move(x, y)
+                if self.movable:
+                    x, y = event.rel
+                    self.move(x, y)
         if event.type == MOUSEBUTTONUP:
             self.clic_on_barre = False
             x, y = event.pos
