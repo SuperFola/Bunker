@@ -30,6 +30,10 @@ class ProcessManager:
                 ProcessManager.instance._execution_datas[process.get_title()]['exc_times'][::-1][:MAX][::-1]
 
     @staticmethod
+    def set_as_toplevel(i):
+        ProcessManager.instance._windows[0:0] = [ProcessManager.instance._windows.pop(i)]
+
+    @staticmethod
     def get_first_active():
         for win in ProcessManager.windows():
             if win.state == WStates.ACTIVE:

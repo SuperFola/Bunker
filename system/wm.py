@@ -17,7 +17,7 @@ class DesktopManager:
         self._content = pygame.Surface((self.screen.get_width() - self.tskb_size[0], self.screen.get_height()))
 
     def update(self):
-        process_manager.ProcessManager.reoder_ifalive()
+        # process_manager.ProcessManager.reoder_ifalive()
         self.draw()
         for win in process_manager.ProcessManager.windows():
             process_manager.ProcessManager.update_process(win)
@@ -91,10 +91,9 @@ class DesktopManager:
 
     def select_prog(self, y=0):
         real_select = (y - self.main_txt_tsk_bar.get_height() - 10) // 14
-        print(y, real_select)
         if 0 <= real_select < len(process_manager.ProcessManager.windows()):
             if real_select < len(process_manager.ProcessManager.windows()):
-                process_manager.ProcessManager.windows()[real_select].set_alive()
+                process_manager.ProcessManager.set_as_toplevel(real_select)
 
     def print_time(self):
         t = time.strftime("%A")
