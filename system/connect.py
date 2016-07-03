@@ -2,6 +2,10 @@ from . utils import *
 from . import bad_2048
 from glob import glob
 import os
+import time
+
+
+TIMER_LOGIN = 5
 
 
 class Connect:
@@ -37,6 +41,7 @@ class Connect:
             self.files[os.path.basename(file).split('.')[0]] = pygame.image.load(file).convert_alpha()
             if os.path.basename(file).split('.')[0] in _sessions:
                 self.files[os.path.basename(file).split('.')[0]] = pygame.transform.scale(self.files[os.path.basename(file).split('.')[0]], (200, 200))
+        self.files["logo"] = pygame.image.load("system/resx/logo.png").convert_alpha()
 
     def _check(self):
         if bad_2048.crypt(4, self.user_pwd) == self.sessions[self.session[0]]["password"]:
@@ -68,6 +73,22 @@ class Connect:
                 self.user_pos = ((self.screen.get_width() - self.session_text.get_width()) // 2, (self.screen.get_height() - self.session_text.get_height()) // 2 - 50)
                 return
         self._error("Non existing session")
+
+    def _welcome(self):
+        until = time.time() + TIMER_LOGIN
+        w, h = 200, 30
+        bar_size = lambda: (TIMER_LOGIN - until - time.time())
+
+        while time.time() <= until:
+            pygame.draw.rect(self.screen, PASTEL_GREEN, (0, 0) + self.screen.get_size())
+            self.screen.blit(self.files['logo'], ((self.screen.get_width() - self.files['logo'].get_width()) // 2, (self.screen.get_height() - self.files['logo'].get_height()) // 2))
+
+            # barre de chargement
+            pygame.draw.rect(self.screen, BLACK, (0, 0, 10, 10))
+
+            ev = pygame.event.poll()
+
+            pygame.display.flip()
 
     def run(self):
         self.load()
@@ -114,6 +135,6 @@ class Connect:
             pygame.display.flip()
 
         if self.connected:
-            pass
+            self._welcome()
         else:
             exit()
